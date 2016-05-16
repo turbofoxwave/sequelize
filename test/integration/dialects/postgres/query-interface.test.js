@@ -15,6 +15,171 @@ if (dialect.match(/^postgres/)) {
       this.queryInterface = this.sequelize.getQueryInterface();
     });
 
+
+    describe('createFunction', function(){
+
+      beforeEach(function(){
+        var self = this;
+        return self.queryInterface.dropFunction("create_job",[{type:"varchar",name:"test"}]).catch(function(err){
+          //function might not be there to start with so suppress the error.
+          var notThere = new RegExp("function create_job.*does not exist")
+          if(notThere.test(err)) return;
+          else throw err;
+        })
+      })
+
+      it("creates a stored procedure", function(){
+
+        var self = this;
+        var body = "return test;";
+        var options = {};
+        return self.queryInterface.createFunction("create_job", [{type:"varchar",name:"test"}], "varchar", "plpgsql", body, options)
+        .then(function(){
+            return self.sequelize.query("select create_job('test');", { type: self.sequelize.QueryTypes.SELECT })
+            .then(function(res){
+              if(res[0].create_job !== 'test') throw new Error("expected output: test");
+            })
+          })
+
+      });
+
+      it("doesn't require parameters")
+
+      it("throws an error if called with no parameter type", function(){
+        var self = this;
+        var body = "return 1;";
+        var options = {};
+        try{
+          return self.queryInterface.createFunction("create_job", [{name:"test"}], "integer", "plpgsql", body, options);
+        }catch(err){
+          var noType = new RegExp("parameter missing type");
+          if(noType.test(err)) return;
+          else throw err;
+        }
+      })
+
+      it("requires returnType", function(){
+        var self = this;
+        var body = "return 1;";
+        var options = {};
+        try{
+          return self.queryInterface.createFunction("create_job", [{type:"varchar",name:"test"}], null, "plpgsql", body, options);
+        }catch(err){
+          if(/createFunction requires returnType/.test(err)) return;
+          else throw err;
+        }
+      })
+
+      it("requires language", function(){
+        var self = this;
+        var body = "return 1;";
+        var options = {};
+        try{
+          return self.queryInterface.createFunction("create_job", [{type:"varchar",name:"test"}], "varchar", null, body, options);
+        }catch(err){
+          if(/createFunction requires language/.test(err)) return;
+          else throw err;
+        }
+      })
+
+      it("requires body", function(){
+        var self = this;
+        var options = {};
+        try{
+          return self.queryInterface.createFunction("create_job", [{type:"varchar",name:"test"}], "varchar", "plpgsql", null, options);
+        }catch(err){
+          if(/createFunction requires body/.test(err)) return;
+          else throw err;
+        }
+      })
+
+
+      it("treats options as optional", function(){
+        var self = this;
+        var body = "return 1;"
+        var options = {};
+        return self.queryInterface.createFunction("create_job", [{type:"varchar",name:"test"}], "varchar", "plpgsql", body, null);
+      })
+
+    });
+
+    describe.only("dropFunction",function(){
+
+
+      it("can drop a function", function(){
+
+        //setup the droptest function
+        //test it
+        //drop the function
+        //try it again.
+        var self = this;
+        var body = "return test;";
+        var options = {};
+        return self.queryInterface.createFunction("droptest", [{type:"varchar",name:"test"}], "varchar", "plpgsql", body, options)
+        .then(function(){
+
+            return self.sequelize.query("select droptest('test');", { type: self.sequelize.QueryTypes.SELECT })
+            .then(function(res){
+              if(res[0].droptest !== 'test') throw new Error("expected output: test");
+
+              return self.queryInterface.dropFunction("droptest",[{type:"varchar",name:"test"}])
+              .then(function(){
+
+                  return self.sequelize.query("select droptest('test');", { type: self.sequelize.QueryTypes.SELECT })
+                  .then(function(){
+                    throw new Error("function failed to drop")
+                  })
+                  .catch(function(err){
+                    var notThere = new RegExp("function droptest.* does not exist")
+                    if(notThere.test(err.message)) return;
+                    else throw err;
+
+                  })
+
+              })
+
+            })
+          })
+
+          it("doesn't require parameters")
+
+      })
+
+
+
+      it("throws an error if called with no parameter type", function(){
+        var self = this;
+        var body = "return 1;";
+        var options = {};
+        try{
+          return self.queryInterface.dropFunction("dropteset", [{name:"test"}], "integer", "plpgsql", body, options);
+        }catch(err){
+          //check if expected error was given... if not throw it up.
+          var noType = new RegExp("parameter missing type");
+          if(noType.test(err)) return;
+          else throw err;
+        }
+      })
+
+    })
+
+    describe("renameFunction", function(){
+
+      it("can rename a function", function(){
+
+      })
+
+      it("doesn't require parameters")
+      it("requires old function name")
+      it("requires new function name")
+
+      it("throws an error if called with no parameter type", function(){
+
+      })
+
+    })
+
+
     describe('indexes', function () {
       beforeEach(function () {
         var self = this;
