@@ -43,7 +43,20 @@ if (dialect.match(/^postgres/)) {
 
       });
 
-      it("doesn't require parameters")
+      it("requires parameters array", function(){
+        var self = this;
+        var body = "return 1;";
+        var options = {};
+        try{
+          return self.queryInterface.createFunction("create_job",null, "integer", "plpgsql", body, options);
+        }catch(err){
+          //check if expected error was given... if not throw it up.
+          if(/.*function parameters array required.*/.test(err)) return;
+          else throw err;
+        }
+
+      })
+
 
       it("throws an error if called with no parameter type", function(){
         var self = this;
@@ -65,7 +78,7 @@ if (dialect.match(/^postgres/)) {
         try{
           return self.queryInterface.createFunction("create_job", [{type:"varchar",name:"test"}], null, "plpgsql", body, options);
         }catch(err){
-          if(/createFunction requires returnType/.test(err)) return;
+          if(/requires returnType/.test(err)) return;
           else throw err;
         }
       })
@@ -77,7 +90,7 @@ if (dialect.match(/^postgres/)) {
         try{
           return self.queryInterface.createFunction("create_job", [{type:"varchar",name:"test"}], "varchar", null, body, options);
         }catch(err){
-          if(/createFunction requires language/.test(err)) return;
+          if(/requires language/.test(err)) return;
           else throw err;
         }
       })
@@ -88,7 +101,7 @@ if (dialect.match(/^postgres/)) {
         try{
           return self.queryInterface.createFunction("create_job", [{type:"varchar",name:"test"}], "varchar", "plpgsql", null, options);
         }catch(err){
-          if(/createFunction requires body/.test(err)) return;
+          if(/requires body/.test(err)) return;
           else throw err;
         }
       })
@@ -103,7 +116,7 @@ if (dialect.match(/^postgres/)) {
 
     });
 
-    describe.only("dropFunction",function(){
+    describe("dropFunction",function(){
 
 
       it("can drop a function", function(){
@@ -141,18 +154,35 @@ if (dialect.match(/^postgres/)) {
             })
           })
 
-          it("doesn't require parameters")
+      })
+
+      it("requires functionName", function(){
+        var self = this;
+        try{
+          return self.queryInterface.dropFunction();
+        }catch(err){
+          //check if expected error was given... if not throw it up.
+          if(/.*requires functionName.*/.test(err)) return;
+          else throw err;
+        }
+
+      })
+      it("requires parameters array", function(){
+        var self = this;
+        try{
+          return self.queryInterface.dropFunction("dropteset");
+        }catch(err){
+          //check if expected error was given... if not throw it up.
+          if(/.*function parameters array required.*/.test(err)) return;
+          else throw err;
+        }
 
       })
 
-
-
       it("throws an error if called with no parameter type", function(){
         var self = this;
-        var body = "return 1;";
-        var options = {};
         try{
-          return self.queryInterface.dropFunction("dropteset", [{name:"test"}], "integer", "plpgsql", body, options);
+          return self.queryInterface.dropFunction("dropteset", [{name:"test"}]);
         }catch(err){
           //check if expected error was given... if not throw it up.
           var noType = new RegExp("parameter missing type");
@@ -169,7 +199,7 @@ if (dialect.match(/^postgres/)) {
 
       })
 
-      it("doesn't require parameters")
+      it("requires parameters array")
       it("requires old function name")
       it("requires new function name")
 
