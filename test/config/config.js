@@ -49,9 +49,9 @@ module.exports = {
   postgres: {
     database: process.env.SEQ_PG_DB   || process.env.SEQ_DB    || 'sequelize_test',
     username: process.env.SEQ_PG_USER || process.env.SEQ_USER  || 'postgres',
-    password: process.env.SEQ_PG_PW   || process.env.SEQ_PW    || 'postgres',
+    password: process.env.SEQ_PG_PW   || process.env.SEQ_PW    || 'il0v3jazz',
     host:     process.env.POSTGRES_PORT_5432_TCP_ADDR || process.env.SEQ_PG_HOST || process.env.SEQ_HOST  || '127.0.0.1',
-    port:     process.env.POSTGRES_PORT_5432_TCP_PORT || process.env.SEQ_PG_PORT || process.env.SEQ_PORT  || 5432,
+    port:     process.env.POSTGRES_PORT_5432_TCP_PORT || process.env.SEQ_PG_PORT || process.env.SEQ_PORT  || 5433,
     pool:     {
       maxConnections: process.env.SEQ_PG_POOL_MAX  || process.env.SEQ_POOL_MAX  || 5,
       maxIdleTime:    process.env.SEQ_PG_POOL_IDLE || process.env.SEQ_POOL_IDLE || 3000

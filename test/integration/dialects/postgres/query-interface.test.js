@@ -7,7 +7,6 @@ var chai = require('chai')
   , dialect = Support.getTestDialect()
   , DataTypes = require(__dirname + '/../../../../lib/data-types')
   , _ = require('lodash');
-
 if (dialect.match(/^postgres/)) {
   describe('[POSTGRES Specific] QueryInterface', function () {
     beforeEach(function () {

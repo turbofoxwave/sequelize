@@ -95,6 +95,9 @@
     "docs": "node docs/docs-generator.js",
     "jshint": "./node_modules/.bin/jshint lib test",
     "teaser": "echo ''; node -pe \"Array(20 + process.env.DIALECT.length + 3).join('#')\"; echo '# Running tests for '$DIALECT' #'; node -pe \"Array(20 + process.env.DIALECT.length + 3).join('#')\";echo '';",
+    "mjb-test": "./node_modules/.bin/mocha --globals setImmediate,clearImmediate --ui tdd --check-leaks --colors -t 15000 --reporter spec 'test/integration/dialects/postgres/query-interface.test.js'",
+    "mjb-test-unit-postgres": "DIALECT=postgres npm run mjb-test",
+
     "test-unit": "./node_modules/.bin/mocha --globals setImmediate,clearImmediate --ui tdd --check-leaks --colors -t 15000 --reporter spec 'test/unit/**/*.js'",
     "test-unit-mysql": "DIALECT=mysql npm run test-unit",
     "test-unit-postgres": "DIALECT=postgres npm run test-unit",
